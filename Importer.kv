@@ -1,0 +1,398 @@
+#:import utils kivy.utils
+
+<MDRaisedButton>
+
+    bold: True
+    font_size: 32
+    font_name: 'GothamBold'
+
+<Choose>:
+
+    name: "Choose"
+
+    MDBoxLayout:
+
+        orientation:'vertical'
+
+        padding: 20
+        spacing: 20
+
+        MDLabel:
+
+            text: "Was soll erstellt werden?"
+            font_name: 'GothamBold'
+            font_size: 32
+            halign: "center"
+
+        MDLabel:
+
+        MDLabel:
+
+
+        MDBoxLayout:
+
+            orientation:'horizontal'
+            size: root.width, root.height
+
+            spacing: 20
+
+            MDRaisedButton:
+
+                text: "Wice-Import"
+                size: (root.width/2) - 30, (root.height/4)*3 - 40
+
+                on_release:
+                    app.root.current = "Wice"
+                    root.manager.transition.direction = 'right'
+
+            MDRaisedButton:
+
+                text: "Close-Import"
+                size: (root.width/2) - 30, (root.height/4)*3 - 40
+
+                on_release:
+                    app.root.current = "Close"
+                    root.manager.transition.direction = 'left'
+        
+        # Neuer Button zum Löschen der Passwörter
+        MDRaisedButton:
+
+            text: "Speicherpfade löschen"
+            font_size: 16  # Reduzierte Schriftgröße
+            size_hint: None, None
+            size: (root.width/3), 40  # Etwas kleinerer Button
+            pos_hint: {'center_x': 0.5}
+            spacing: 10  # Abstand zwischen den Buttons
+            padding: 10  # Innenabstand des Buttons
+
+            on_press:
+                app.delete_passwords()
+
+<Wice>:
+
+    name: "Wice"
+
+    MDBoxLayout:
+
+        orientation:'vertical'
+        size: root.width, root.height
+
+        padding: 20
+        spacing: 20
+
+        spacing: 20
+
+        MDLabel:
+
+            font_name: 'GothamBold'
+            font_size: 22 
+            
+            text: "Wähle den Close-Export aus und anschließend einen gewünschten Speicherort, sodass das Tool einen Import erstellen und speichern kann:"
+            halign: "center"
+            # valign: "middle"
+            size_hint: None, None
+            size: root.width - 40, 114
+
+        MDRaisedButton:
+
+            id: choose_file
+            
+            text: 'Datei Auswählen'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            on_release:
+                app.open_file_manager()
+                root.disable_first()
+
+        MDRaisedButton:
+
+            id: choose_dir
+
+            text: 'Speicherort auswählen'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            disabled: True
+
+            on_press:
+                root.save_file()
+                app.open_file_manager()
+                root.disable_second()
+
+        MDRaisedButton:
+
+            id: export_button
+
+            text: 'Export'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            disabled: True
+
+            on_press:
+                root.save_path()
+                app.import_wice()
+                root.reset_buttons()
+
+        MDLabel:
+
+        MDRaisedButton:
+
+            text: 'Zurück'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            on_press:
+                root.reset_buttons()
+
+            on_release: 
+                app.root.current = "Choose"
+                root.manager.transition.direction = 'left'
+
+<FinishW>:
+
+    name: "FinishW"
+
+    MDBoxLayout:
+
+        orientation:'vertical'
+        size: root.width, root.height
+
+        padding: 20
+        spacing: 20
+
+        MDLabel:
+
+            font_name: 'GothamBold'
+            font_size: 22 
+            
+            text: "Wähle den OneDrive-Ordner mit den Reports der Partner aus, sodass das Tool die Reports aktualisieren und speichern kann:"
+            halign: "center"
+            size_hint: None, None
+            size: root.width - 40, 114
+
+        MDRaisedButton:
+
+            id: choose_dir
+            
+            text: 'Ordner Auswählen'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            on_release:
+                app.open_file_manager()
+                root.disable_first()
+
+        MDRaisedButton:
+
+            id: export_button
+
+            text: 'Export'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            disabled: True
+
+            on_press:
+            
+                root.save_path()
+                app.import_wice_upload()      
+                root.disable_third()
+
+        MDLabel:
+
+        MDRaisedButton:
+
+            text: 'Zurück'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            on_press:
+                root.disable_third()
+
+            on_release: 
+                app.root.current = "Choose"
+                root.manager.transition.direction = 'left'
+
+<Close>:
+
+    name: "Close"
+
+    MDBoxLayout:
+
+        orientation:'vertical'
+        size: root.width, root.height
+
+        padding: 20
+        spacing: 20
+
+        spacing: 20
+
+        MDLabel:
+
+            font_name: 'GothamBold'
+            font_size: 22 
+            
+            text: "Wähle den OneDrive-Ordner mit den Importlisten der Partner aus und anschließend einen gewünschten Speicherort, sodass das Tool einen Import erstellen und speichern kann:"
+            halign: "center"
+            size_hint: None, None
+            size: root.width - 40, 114
+
+        MDRaisedButton:
+
+            id: choose_file
+            
+            text: 'Ordner Auswählen'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            on_release:
+                app.open_file_manager()
+                root.disable_first()
+
+        MDRaisedButton:
+
+            id: choose_dir
+
+            text: 'Speicherort auswählen'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            disabled: True
+
+            on_press:
+                root.save_path(root.close_imports_path)
+                app.open_file_manager()
+                root.disable_second()
+
+        MDRaisedButton:
+
+            id: export_button
+
+            text: 'Export'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            disabled: True
+
+            on_press:
+                root.save_path(root.close_save_path)
+                app.import_close()
+                root.disable_third()
+
+        MDLabel:
+
+        MDRaisedButton:
+
+            text: 'Zurück'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            on_press:
+                root.disable_third()
+
+            on_release: 
+                app.root.current = "Choose"
+                root.manager.transition.direction = 'left'
+
+<FinishC>:
+
+    name: "FinishC"
+
+    MDBoxLayout:
+
+        orientation:'vertical'
+        size: root.width, root.height
+
+        padding: 20
+        spacing: 20
+
+        spacing: 20
+
+        MDLabel:
+
+            font_name: 'GothamBold'
+            font_size: 22 
+            
+            text: "Überprüfe und korrigiere den neu erstellten Import und wähle ihn anschließend aus, sowie die Import-Master-Datei, sodass diese um unseren neuen Import ergänzt wird:"
+            halign: "center"
+            # valign: "middle"
+            size_hint: None, None
+            size: root.width - 40, 114
+
+        MDRaisedButton:
+
+            id: choose_file
+            
+            text: 'Import Auswählen'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            on_release:
+                app.open_file_manager()
+                root.disable_first()
+
+        MDRaisedButton:
+
+            id: choose_dir
+
+            text: 'Master auswählen'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            disabled: True
+
+            on_press:
+                root.save_file()
+                app.open_file_manager()
+                root.disable_second()
+
+        MDRaisedButton:
+
+            id: export_button
+
+            text: 'Update'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            disabled: True
+
+            on_press:
+                root.save_path()
+                app.import_close_upload()
+                root.reset_buttons()
+
+            on_release: 
+                app.root.current = "Choose"
+                root.manager.transition.direction = 'right'
+
+        MDLabel:
+
+        MDRaisedButton:
+
+            text: 'Zurück'
+            font_size: 24
+
+            size: root.width - 40, 75
+
+            on_press:
+                root.reset_buttons()
+
+            on_release: 
+                app.root.current = "Choose"
+                root.manager.transition.direction = 'left'
