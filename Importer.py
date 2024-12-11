@@ -271,82 +271,193 @@ class Importer(MDApp):
         self.manager_open = False
         self.file_manager_obj.close()
 
+    # def import_wice(self):
+        
+    #     global cvr_export
+    #     global file
+        
+    #     save = keyring.get_password(CVR_USER, wice_save_path)
+        
+    #     export = pd.read_excel("Wice_Report_Master.xlsx")
+    #     df = pd.read_csv(file, index_col=False, encoding="utf-8")
+    #     cvr_export = df
+        
+    #     date1 = []
+
+    #     export_date = dt.datetime.today()
+    #     export_date = export_date.strftime("%d_%m_%Y")
+
+    #     for name in df["last_activity_date"]:
+            
+    #         if str(name) != "nan":
+                
+    #             a, b, c = str(name).split("-")
+    #             c = c.split("T")[0] 
+    #             out1 = str(c + "." + b + "." + a)
+    #             out_check = dt.datetime.strptime(out1, "%d.%m.%Y")
+    #             print(out1)
+
+    #             # Über prüfen, ob das Datum in der Zukunft liegt oder mehr als 10 Tage in der Vergangenheit liegt
+    #             if out_check > dt.datetime.today() or (dt.datetime.today() - out_check).days > 10:
+    #                 # Wenn das Datum in der Zukunft liegt, wird die Zeile in der Tabelle gelöscht
+    #                 df.drop(index=df[df["last_activity_date"]==name].index, inplace=True)
+    #             else:
+    #                 date1.append(out1)
+            
+    #     export["date_updated"] = date1
+        
+    #     export["lead_name"] = df["lead_name"]
+    #     export["description"] = df["description"]
+    #     export["status_label"] = df["status_label"]
+    #     export["primary_contact_first_name"] = df["primary_contact_first_name"]
+    #     export["primary_contact_last_name"] = df["primary_contact_last_name"]
+    #     export["primary_contact_title"] = df["primary_contact_title"]
+    #     export["primary_contact_primary_phone"] = df["primary_contact_primary_phone"]
+    #     export["primary_contact_other_phones"] = df["primary_contact_other_phones"]
+    #     export["primary_contact_primary_email"] = df["primary_contact_primary_email"]
+    #     export["DUNS-Nummer"] = df["custom.DUNS-Nummer"]
+    #     export["custom.Quelle"] = df["custom.Quelle"]
+    #     export["custom.Tag"] = df["custom.Tag"]
+    #     export["custom.Verantwortlich.name"] = df["custom.Verantwortlich.name"]
+    #     export["last_call_note"] = df["last_call_note"]
+    #     export["next_task_text"] = df["next_task_text"]
+    #     export["num_calls"] = df["num_calls"]
+    #     export["num_email"] = df["num_emails"]
+
+    #     i = 0
+
+    #     for name in df["next_task_date"]:
+            
+    #         if str(name) != "nan":
+                
+    #             a, b, c = str(name).split("-")
+    #             c = c.split("T")[0]
+    #             out2 = str(c + "." + b + "." + a)
+    #             export.iloc[i, 15] = out2
+
+    #         i = i + 1
+            
+    #     export_date = dt.datetime.today()
+    #     export_date = export_date.strftime("%d_%m_%Y")
+
+    #     export = export[export["date_updated"].notna()]
+            
+    #     export.to_excel(f"{save}/Wice_Report_{export_date}.xlsx", index=False)
+    #     toast("Export abgeschlossen! Du findest ihn nun an dem von dir ausgewählten Speicherort!", duration=5)
+        
+    #     sm.transition.direction = "right"
+    #     sm.current = "FinishW" 
+
     def import_wice(self):
-        
-        global cvr_export
-        global file
-        
-        save = keyring.get_password(CVR_USER, wice_save_path)
-        
-        export = pd.read_excel("Wice_Report_Master.xlsx")
-        df = pd.read_csv(file, index_col=False, encoding="utf-8")
-        cvr_export = df
-        
-        date1 = []
-
-        export_date = dt.datetime.today()
-        export_date = export_date.strftime("%d_%m_%Y")
-
-        for name in df["last_activity_date"]:
-            
-            if str(name) != "nan":
+        try:
+            global cvr_export
+            global file
+            # Check if files exist
+            if not os.path.exists("Wice_Report_Master.xlsx") or not os.path.exists(file):
+                raise FileNotFoundError("Required input files not found")
                 
-                a, b, c = str(name).split("-")
-                c = c.split("T")[0] 
-                out1 = str(c + "." + b + "." + a)
-                out_check = dt.datetime.strptime(out1, "%d.%m.%Y")
-                print(out1)
-
-                # Über prüfen, ob das Datum in der Zukunft liegt oder mehr als 10 Tage in der Vergangenheit liegt
-                if out_check > dt.datetime.today() or (dt.datetime.today() - out_check).days > 10:
-                    # Wenn das Datum in der Zukunft liegt, wird die Zeile in der Tabelle gelöscht
-                    df.drop(index=df[df["last_activity_date"]==name].index, inplace=True)
-                else:
-                    date1.append(out1)
+            save = keyring.get_password(CVR_USER, wice_save_path)
             
-        export["date_updated"] = date1
-        
-        export["lead_name"] = df["lead_name"]
-        export["description"] = df["description"]
-        export["status_label"] = df["status_label"]
-        export["primary_contact_first_name"] = df["primary_contact_first_name"]
-        export["primary_contact_last_name"] = df["primary_contact_last_name"]
-        export["primary_contact_title"] = df["primary_contact_title"]
-        export["primary_contact_primary_phone"] = df["primary_contact_primary_phone"]
-        export["primary_contact_other_phones"] = df["primary_contact_other_phones"]
-        export["primary_contact_primary_email"] = df["primary_contact_primary_email"]
-        export["DUNS-Nummer"] = df["custom.DUNS-Nummer"]
-        export["custom.Quelle"] = df["custom.Quelle"]
-        export["custom.Tag"] = df["custom.Tag"]
-        export["custom.Verantwortlich.name"] = df["custom.Verantwortlich.name"]
-        export["last_call_note"] = df["last_call_note"]
-        export["next_task_text"] = df["next_task_text"]
-        export["num_calls"] = df["num_calls"]
-        export["num_email"] = df["num_emails"]
+            # Load data with error handling
+            try:
+                export = pd.read_excel("Wice_Report_Master.xlsx")
+                df = pd.read_csv(file, index_col=False, encoding="utf-8")
+            except Exception as e:
+                raise Exception(f"Error reading input files: {str(e)}")
 
-        i = 0
+            cvr_export = df
 
-        for name in df["next_task_date"]:
+            # Verify required columns exist
+            required_columns = [
+                "last_activity_date", "lead_name", "description", "status_label",
+                "primary_contact_first_name", "primary_contact_last_name",
+                "primary_contact_title", "primary_contact_primary_phone",
+                "primary_contact_other_phones", "primary_contact_primary_email",
+                "custom.DUNS-Nummer", "custom.Quelle", "custom.Tag",
+                "custom.Verantwortlich.name", "last_call_note", "next_task_text",
+                "num_calls", "num_emails", "next_task_date"
+            ]
             
-            if str(name) != "nan":
-                
-                a, b, c = str(name).split("-")
-                c = c.split("T")[0]
-                out2 = str(c + "." + b + "." + a)
-                export.iloc[i, 15] = out2
+            missing_cols = [col for col in required_columns if col not in df.columns]
+            if missing_cols:
+                raise ValueError(f"Missing required columns: {missing_cols}")
 
-            i = i + 1
-            
-        export_date = dt.datetime.today()
-        export_date = export_date.strftime("%d_%m_%Y")
+            # Process dates safely
+            def parse_date(date_str):
+                if pd.isna(date_str):
+                    return None
+                try:
+                    # Handle different possible date formats
+                    if 'T' in str(date_str):
+                        date_part = str(date_str).split('T')[0]
+                    else:
+                        date_part = str(date_str)
+                        
+                    date_obj = pd.to_datetime(date_part)
+                    return date_obj.strftime("%d.%m.%Y")
+                except:
+                    return None
 
-        export = export[export["date_updated"].notna()]
+            # Create a copy of df to avoid modification during iteration
+            df_filtered = df.copy()
             
-        export.to_excel(f"{save}/Wice_Report_{export_date}.xlsx", index=False)
-        toast("Export abgeschlossen! Du findest ihn nun an dem von dir ausgewählten Speicherort!", duration=5)
-        
-        sm.transition.direction = "right"
-        sm.current = "FinishW" 
+            # Process last activity dates
+            df_filtered['parsed_date'] = df_filtered['last_activity_date'].apply(parse_date)
+            df_filtered['date_obj'] = pd.to_datetime(df_filtered['parsed_date'], format='%d.%m.%Y', errors='coerce')
+            
+            # Filter dates
+            today = dt.datetime.today()
+            mask = (df_filtered['date_obj'].notna() & 
+                    (df_filtered['date_obj'] <= today) & 
+                    (today - df_filtered['date_obj'] <= pd.Timedelta(days=10)))
+            
+            df_filtered = df_filtered[mask]
+
+            # Update export dataframe
+            column_mapping = {
+                'lead_name': 'lead_name',
+                'description': 'description',
+                'status_label': 'status_label',
+                'primary_contact_first_name': 'primary_contact_first_name',
+                'primary_contact_last_name': 'primary_contact_last_name',
+                'primary_contact_title': 'primary_contact_title',
+                'primary_contact_primary_phone': 'primary_contact_primary_phone',
+                'primary_contact_other_phones': 'primary_contact_other_phones',
+                'primary_contact_primary_email': 'primary_contact_primary_email',
+                'custom.DUNS-Nummer': 'DUNS-Nummer',
+                'custom.Quelle': 'custom.Quelle',
+                'custom.Tag': 'custom.Tag',
+                'custom.Verantwortlich.name': 'custom.Verantwortlich.name',
+                'last_call_note': 'last_call_note',
+                'next_task_text': 'next_task_text',
+                'num_calls': 'num_calls',
+                'num_emails': 'num_email'
+            }
+
+            # Update export dataframe with filtered data
+            export['date_updated'] = df_filtered['parsed_date']
+            for source, target in column_mapping.items():
+                export[target] = df_filtered[source]
+
+            # Process next task dates
+            export['next_task_date'] = df_filtered['next_task_date'].apply(parse_date)
+
+            # Remove rows with no date_updated
+            export = export[export['date_updated'].notna()]
+
+            # Save the result
+            export_date = dt.datetime.today().strftime("%d_%m_%Y")
+            output_path = os.path.join(save, f"Wice_Report_{export_date}.xlsx")
+            
+            export.to_excel(output_path, index=False)
+            toast("Export abgeschlossen! Du findest ihn nun an dem von dir ausgewählten Speicherort!", duration=5)
+            
+            sm.transition.direction = "right"
+            sm.current = "FinishW"
+            
+        except Exception as e:
+            toast(f"Fehler beim Import: {str(e)}", duration=5)
+            return None
         
     def import_wice_upload(self):
         
@@ -673,7 +784,28 @@ class Importer(MDApp):
 
         # Anwendung der Funktion zum Extrahieren des ersten Wertes auf die 'Email' und 'URL' Spalten
         close_import['Email'] = close_import['Email'].apply(get_first_valid_email)
+        close_import['Email.1'] = close_import['Email.1'].apply(get_first_valid_email)
         close_import['URL'] = close_import['URL'].apply(get_first_valid_url)
+
+        def determine_country_from_phone(phone_number):
+            """Determines country based on phone number prefix"""
+            if pd.isna(phone_number):
+                return 'Germany'  # Default value
+                
+            phone = str(phone_number).strip()
+            
+            # Check for different formats of country codes
+            if '+49' in phone or '(49)' in phone:
+                return 'Germany'
+            elif '+43' in phone or '(43)' in phone:
+                return 'Austria'
+            elif '+41' in phone or '(41)' in phone:
+                return 'Switzerland'
+            
+            return 'Germany'  # Default if no match
+
+        # Add this line after the phone number formatting section:
+        close_import['Country'] = close_import['Phone (formatted)'].apply(determine_country_from_phone)
       
         export_date = dt.datetime.today()
         export_date = export_date.strftime("%d_%m_%Y")
